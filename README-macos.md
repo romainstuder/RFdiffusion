@@ -62,8 +62,8 @@ If you want to set up RFdiffusion locally on Apple MacOS Silicon (ARM64), follow
 
 
 ### Install conda and uv for installation
-miniconda => free mini anaconda: https://www.anaconda.com/docs/getting-started/miniconda/main
-uv => fast python solver for dependencies: https://docs.astral.sh/uv/
+- miniconda => free mini anaconda: https://www.anaconda.com/docs/getting-started/miniconda/main
+- uv => fast python solver for dependencies: https://docs.astral.sh/uv/
 ```shell
 brew install miniconda uv
 ```
@@ -74,18 +74,14 @@ To get started using RFdiffusion, clone the repo:
 git clone https://github.com/romainstuder/RFdiffusion.git
 ```
 
-### Install Conda and set it up to arm64. We need to use Python <3.12 for compatibility issues.
+### Set up Conda 
+Set it up to arm64. We need to use Python <3.12 for compatibility issues.
 ```shell
 cd RFdiffusion
-CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.10
-# Set ARM64 as preferred architecture
-conda config --env --set subdir osx-arm64  # For macOS
-# ```
+CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.11
+```
 
-
-
-
-### Install Python dependencies
+### Install Python dependencies from pyproject.toml using UV
 ```shell
 conda activate rfdiffusion
 uv pip install -r pyproject.toml
@@ -121,6 +117,7 @@ print(f"check the torch MPS backend: {torch.device('mps')}")
 print(f"test torch tensor on MPS: {torch.tensor([1,2,3], device='mps')}")
 ```
 => PyTorch version: 2.5.1
+
 => Torchdata version: 0.8.0
 
 
@@ -182,20 +179,20 @@ torchvision        0.20.1
 
 Based on https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md 
 
-# install NVTX C headers, then real NVTX Python-binding
+install NVTX C headers, then real NVTX Python-binding
 ```shell
 pip install git+https://github.com/YaoYinYing/nvtx-mock --force-reinstall
 pip install nvtx
 ````
 
-# install this version of SE3Transformer with cuda mocked out
+install this version of SE3Transformer with cuda mocked out
 ```shell
 pip install git+https://github.com/YaoYinYing/SE3Transformer
 pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
 
 ```
 
-Now we can install RFDiffusion:
+### Install RFDiffusion:
 ```shell
 cd ./RFdiffusion
 pip install -e . # install the rfdiffusion module from the root of the repository
@@ -225,9 +222,6 @@ pymol ./test_outputs/short_test_0.pdb
 
 
 For running a full RFDiffusion, you'll then need to download the model weights into the RFDiffusion directory.
-
-NOTE: you can only download `Base_ckpt.pt` and skip the others if you want to just perform a small test.
-
 ```shell
 mkdir models && cd models
 wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt
@@ -248,7 +242,7 @@ cd ../
 ```
 
 
-
+Note: the rest of the README.md is identical to the main one.
 
 
 

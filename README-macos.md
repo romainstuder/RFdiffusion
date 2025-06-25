@@ -62,7 +62,9 @@ If you want to set up RFdiffusion locally on Apple MacOS Silicon (ARM64), follow
 
 
 ### Install conda and uv for installation
-```
+miniconda => free mini anaconda: https://www.anaconda.com/docs/getting-started/miniconda/main
+uv => fast python solver for dependencies: https://docs.astral.sh/uv/
+```shell
 brew install miniconda uv
 ```
 
@@ -201,9 +203,32 @@ pip install -e . # install the rfdiffusion module from the root of the repositor
 
 
 
-
-You'll then need to download the model weights into the RFDiffusion directory.
+Now, we can download the bas model weights `Base_ckpt.pt` and perform a small test:
+```shell
+mkdir models && cd models
+wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt
+cd ../
 ```
+
+Let's perform a small test (1 model with 50 amino acids, aka two helices):
+```shell
+./scripts/run_inference.py 'contigmap.contigs=[50-50]' \
+  inference.output_prefix=test_outputs/short_test \
+  inference.num_designs=1
+```
+
+Optional: you can visualise it with PyMOL:
+```shell
+brew install pymol
+pymol ./test_outputs/short_test_0.pdb
+```
+
+
+For running a full RFDiffusion, you'll then need to download the model weights into the RFDiffusion directory.
+
+NOTE: you can only download `Base_ckpt.pt` and skip the others if you want to just perform a small test.
+
+```shell
 mkdir models && cd models
 wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt
 wget http://files.ipd.uw.edu/pub/RFdiffusion/e29311f6f1bf1af907f9ef9f44b8328b/Complex_base_ckpt.pt
@@ -218,14 +243,10 @@ wget http://files.ipd.uw.edu/pub/RFdiffusion/f572d396fae9206628714fb2ce00f72e/Co
 
 # original structure prediction weights
 wget http://files.ipd.uw.edu/pub/RFdiffusion/1befcb9b28e2f778f53d47f18b7597fa/RF_structure_prediction_weights.pt
+
+cd ../
 ```
 
-Small test (1 model with 50 amino acids, i.e. two helices):
-```shell
-./scripts/run_inference.py 'contigmap.contigs=[50-50]' \
-  inference.output_prefix=test_outputs/short_test \
-  inference.num_designs=1
-```
 
 
 

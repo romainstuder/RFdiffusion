@@ -68,18 +68,19 @@ brew install miniconda uv
 
 
 To get started using RFdiffusion, clone the repo:
-```
+```shell
 git clone https://github.com/romainstuder/RFdiffusion.git
+```
+
+### Install Conda and set it up to arm64. We need to use Python <3.12 for compatibility issues.
+```shell
 cd RFdiffusion
 CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.10
-
-```
-
-
-### Install Conda and set it up to arm64
+# Set ARM64 as preferred architecture
+conda config --env --set subdir osx-arm64  # For macOS
+# ```
 
 
-We need to use Python <3.12 for compatibility issues.
 
 
 ### Install Python dependencies
@@ -93,14 +94,21 @@ uv pip install -r pyproject.toml
 We need to use PyTorch <2.6.0 for compatibility issues. 
 Same for torchdata, as torchdata.datapipes deprecated in 0.8.0, removed in 0.9.0.
 
-```
-conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 torchdata==0.8.0  cpuonly -c pytorch
+```shell
+CONDA_SUBDIR=osx-arm64 conda install pytorch==2.5.1 \
+  torchvision==0.20.1 \
+  torchaudio==2.5.1 \
+  torchdata==0.8.0  \
+  cpuonly \
+  -c pytorch
 ```
 
 Launch Python to check PyTroch is using Apple Metal Performance Shaders (MPS):
 https://developer.apple.com/metal/pytorch/
 ```shell
 python3
+```
+```shell
 import torch
 import torchdata.datapipes
 print(f"PyTorch version: {torch.__version__}")
@@ -111,7 +119,7 @@ print(f"check the torch MPS backend: {torch.device('mps')}")
 print(f"test torch tensor on MPS: {torch.tensor([1,2,3], device='mps')}")
 ```
 => PyTorch version: 2.5.1
-==> Torchdata version: 0.8.0
+=> Torchdata version: 0.8.0
 
 
 
@@ -125,6 +133,7 @@ conda activate rfdiffusion
 ```
 ```shell
 # Clone and build
+cd ../
 git clone --recurse-submodules https://github.com/dmlc/dgl.git
 cd dgl
 git checkout 2.5.x
@@ -140,11 +149,12 @@ cmake -DCMAKE_BUILD_TYPE=Release \
       ..
 make -j4
 ```
-Make will trigger an error we can ignore: `make: *** [all] Error 2 => ignore`
-Juste continue with python installation:
+Make will trigger an error we can ignore: `make: *** [all] Error 2`
+We could continue with python installation:
 ```shell
 cd ../python
 pip install -e .
+cd ../../
 ```
 
 
@@ -185,6 +195,7 @@ pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
 
 Now we can install RFDiffusion:
 ```shell
+cd ./RFdiffusion
 pip install -e . # install the rfdiffusion module from the root of the repository
 ```
 

@@ -75,7 +75,7 @@ git clone https://github.com/romainstuder/RFdiffusion.git
 ```
 
 ### Set up Conda 
-Initialise conda with arm64. We need to use Python <3.12 for compatibility issues.
+Initialise Conda for arm64. We need to use Python <3.12 for compatibility issues.
 ```shell
 cd RFdiffusion
 CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.11
@@ -84,7 +84,7 @@ conda activate rfdiffusion
 
 ### Install SE3-Transformer
 
-Based on https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md
+Based on https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md  
 Install NVTX C headers, then real NVTX Python-binding, then this version of SE3Transformer with cuda mocked out
 ```shell
 pip install git+https://github.com/YaoYinYing/nvtx-mock --force-reinstall
@@ -115,7 +115,6 @@ print(f"check the torch MPS backend: {torch.device('mps')}")
 print(f"test torch tensor on MPS: {torch.tensor([1,2,3], device='mps')}")
 ```
 => PyTorch version: 2.5.1
-
 => Torchdata version: 0.8.0
 
 
@@ -125,9 +124,6 @@ print(f"test torch tensor on MPS: {torch.tensor([1,2,3], device='mps')}")
 We need to compile DGL 2.5 fron sources. And we need release 2.5 to match PyTorch release.
 https://www.dgl.ai/pages/start.html
 
-```shell
-conda activate rfdiffusion
-```
 ```shell
 # Clone and build
 cd ../
@@ -146,7 +142,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
       ..
 make -j4
 ```
-Make will trigger an error we can ignore: `make: *** [all] Error 2`
+Make will trigger an error we can ignore: `make: *** [all] Error 2`  
 We could continue with python installation:
 ```shell
 cd ../python
@@ -188,6 +184,9 @@ Let's perform a small test (1 model with 50 amino acids, aka two helices):
   inference.output_prefix=test_outputs/short_test \
   inference.num_designs=1
 ```
+There will be many deprecation warnings. This is expected as we pinned some modules to one release prior these functions 
+are removed.
+=> One 3D structure will be produced in `./test_outputs/short_test_0.pdb`.
 
 Optional: you can visualise it with PyMOL:
 ```shell
@@ -196,7 +195,7 @@ pymol ./test_outputs/short_test_0.pdb
 ```
 
 
-For running a full RFDiffusion, you'll then need to download the model weights into the RFDiffusion directory.
+For running a full RFDiffusion, you will then need to download the model weights into the models directory.
 ```shell
 mkdir models && cd models
 wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt

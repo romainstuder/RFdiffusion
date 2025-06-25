@@ -75,33 +75,31 @@ git clone https://github.com/romainstuder/RFdiffusion.git
 ```
 
 ### Set up Conda 
-Set it up to arm64. We need to use Python <3.12 for compatibility issues.
+Initialise conda with arm64. We need to use Python <3.12 for compatibility issues.
 ```shell
 cd RFdiffusion
 CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.11
+conda activate rfdiffusion
 ```
 
-### Install Python dependencies from pyproject.toml using UV
+### Install SE3-Transformer
+
+Based on https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md
+Install NVTX C headers, then real NVTX Python-binding, then this version of SE3Transformer with cuda mocked out
 ```shell
-conda activate rfdiffusion
+pip install git+https://github.com/YaoYinYing/nvtx-mock --force-reinstall
+pip install nvtx
+pip install git+https://github.com/YaoYinYing/SE3Transformer
+pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
+```
+
+### Install PyTorch and others Python dependencies from pyproject.toml using UV
+(PyTorch is fixed to 2.5.1 for compatibilities issues)
+```shell
 uv pip install -r pyproject.toml
 ```
 
-### Install PyTorch
-
-We need to use PyTorch <2.6.0 for compatibility issues. 
-Same for torchdata, as torchdata.datapipes deprecated in 0.8.0, removed in 0.9.0.
-
-```shell
-CONDA_SUBDIR=osx-arm64 conda install pytorch==2.5.1 \
-  torchvision==0.20.1 \
-  torchaudio==2.5.1 \
-  torchdata==0.8.0  \
-  cpuonly \
-  -c pytorch
-```
-
-Launch Python to check PyTroch is using Apple Metal Performance Shaders (MPS):
+Launch Python to check PyTorch is installed and using Apple Metal Performance Shaders (MPS):
 https://developer.apple.com/metal/pytorch/
 ```shell
 python3
@@ -171,36 +169,13 @@ torchvision        0.20.1
 ```
 
 
-
-
-
-
-### Conda Install SE3-Transformer
-
-Based on https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md 
-
-install NVTX C headers, then real NVTX Python-binding
-```shell
-pip install git+https://github.com/YaoYinYing/nvtx-mock --force-reinstall
-pip install nvtx
-````
-
-install this version of SE3Transformer with cuda mocked out
-```shell
-pip install git+https://github.com/YaoYinYing/SE3Transformer
-pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
-
-```
-
 ### Install RFDiffusion:
 ```shell
 cd ./RFdiffusion
 pip install -e . # install the rfdiffusion module from the root of the repository
 ```
 
-
-
-Now, we can download the bas model weights `Base_ckpt.pt` and perform a small test:
+Now, we can download the bas model weights `Base_ckpt.pt` (460MB) and perform a small test:
 ```shell
 mkdir models && cd models
 wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt

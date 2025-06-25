@@ -1,6 +1,11 @@
 [project]
 name = "rfdiffusion"
-version = "2.5"
+description="RFdiffusion is an open source method for protein structure generation."
+authors = [
+    {name = "Rosetta Commons"}
+]
+urls = {Homepage = "https://github.com/RosettaCommons/RFdiffusion"}
+version = "1.1.0"
 requires-python = ">=3.9,<3.12"
 dependencies = [
     "configparser>=7.2.0",
@@ -20,6 +25,7 @@ dependencies = [
     "pyrsistent>=0.20.0",
     "pyyaml>=6.0.2",
     "scipy>=1.10.0",
+    "se3-transformer",
     "torch==2.5.1",
     "torchaudio==2.5.1",
     "torchdata==0.8.0",
@@ -27,3 +33,9 @@ dependencies = [
     "tqdm",
     "wandb>=0.12.0"
 ]
+
+[project.scripts]
+run-inference = "scripts.run_inference:main"
+
+[tool.setuptools]
+packages = ["rfdiffusion"]

@@ -74,23 +74,15 @@ brew upgrade
 brew install cmake libomp llvm miniconda uv wget
 ```
 
-
-To get started using RFdiffusion, clone the repo:
-```shell
-git clone https://github.com/romainstuder/RFdiffusion.git
-```
-
 ### Set up Conda 
 Initialise Conda for arm64. We need to use Python <3.12 for compatibility issues.
 ```shell
-cd RFdiffusion
 CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.11
 conda activate rfdiffusion
 ```
 
 ### Install SE3-Transformer
-
-Based on https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md  
+Based from https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md  
 Install NVTX C headers, then real NVTX Python-binding, then this version of SE3Transformer with cuda mocked out
 ```shell
 uv pip install git+https://github.com/YaoYinYing/nvtx-mock --force-reinstall
@@ -99,10 +91,13 @@ uv pip install git+https://github.com/YaoYinYing/SE3Transformer
 uv pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
 ```
 
-### Install PyTorch and others Python dependencies from pyproject.toml using UV
+### Clone the RFdiffusion repo and install PyTorch and others Python dependencies from pyproject.toml using UV
 (PyTorch is fixed to 2.5.1 for compatibilities issues)
 ```shell
+git clone https://github.com/romainstuder/RFdiffusion.git
+cd ./RFdiffusion
 uv pip install -r pyproject.toml
+cd ../
 ```
 
 Launch Python to check PyTorch is installed and using Apple Metal Performance Shaders (MPS):
@@ -120,7 +115,7 @@ print(f"current PyTorch installation built with MPS activated? {torch.backends.m
 print(f"check the torch MPS backend: {torch.device('mps')}")
 print(f"test torch tensor on MPS: {torch.tensor([1,2,3], device='mps')}")
 ```
-=> PyTorch version: 2.5.1
+=> PyTorch version: 2.5.1  
 => Torchdata version: 0.8.0
 
 
@@ -132,11 +127,10 @@ https://www.dgl.ai/pages/start.html
 
 ```shell
 # Clone and build
-cd ../
 git clone --recurse-submodules https://github.com/dmlc/dgl.git
-cd dgl
+cd ./dgl
 git checkout 2.5.x
-mkdir build
+mkdir -p build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
       -DUSE_CUDA=OFF \
@@ -174,7 +168,7 @@ torchvision        0.20.1
 ### Install RFDiffusion:
 ```shell
 cd ./RFdiffusion
-pip install -e . # install the rfdiffusion module from the root of the repository
+uv pip install -e . # install the rfdiffusion module from the root of the repository
 ```
 
 Now, we can download the bas model weights `Base_ckpt.pt` (460MB) and perform a small test:

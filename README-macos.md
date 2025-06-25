@@ -61,18 +61,30 @@ We strongly recommend reading this README carefully before getting started with 
 If you want to set up RFdiffusion locally on Apple MacOS Silicon (ARM64), follow the steps below:
 
 
+### Install conda and uv for installation
+```
+brew install miniconda uv
+```
+
+
+To get started using RFdiffusion, clone the repo:
+```
+git clone https://github.com/RosettaCommons/RFdiffusion.git
+cd RFdiffusion
+CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.10
+
+```
+
 
 ### Install Conda and set it up to arm64
 
-```
-brew install miniconda uv
-CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.10
-```
+
 We need to use Python <3.12 for compatibility issues.
 
 
 ### Install Python dependencies
 ```shell
+conda activate rfdiffusion
 uv pip install -r pyproject.toml
 ```
 
@@ -150,23 +162,13 @@ torchvision        0.20.1
 ```
 
 
-# install this version of SE3Transformer with cuda mocked out
-pip install git+https://github.com/YaoYinYing/SE3Transformer
-pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
 
 
-Now we can install RFDiffusion
-
-
-
-To get started using RFdiffusion, clone the repo:
-```
-cd ../
-git clone https://github.com/RosettaCommons/RFdiffusion.git
-```
 
 
 ### Conda Install SE3-Transformer
+
+Based on https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md 
 
 # install NVTX C headers, then real NVTX Python-binding
 ```shell
@@ -180,6 +182,13 @@ pip install git+https://github.com/YaoYinYing/SE3Transformer
 pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
 
 ```
+
+Now we can install RFDiffusion:
+```shell
+pip install -e . # install the rfdiffusion module from the root of the repository
+```
+
+
 
 
 You'll then need to download the model weights into the RFDiffusion directory.
@@ -200,9 +209,11 @@ wget http://files.ipd.uw.edu/pub/RFdiffusion/f572d396fae9206628714fb2ce00f72e/Co
 wget http://files.ipd.uw.edu/pub/RFdiffusion/1befcb9b28e2f778f53d47f18b7597fa/RF_structure_prediction_weights.pt
 ```
 
-Small test (1 model with 50 amino acids):
+Small test (1 model with 50 amino acids, i.e. two helices):
 ```shell
-./scripts/run_inference.py 'contigmap.contigs=[50-50]' inference.output_prefix=test_outputs/short_test inference.num_designs=1
+./scripts/run_inference.py 'contigmap.contigs=[50-50]' \
+  inference.output_prefix=test_outputs/short_test \
+  inference.num_designs=1
 ```
 
 

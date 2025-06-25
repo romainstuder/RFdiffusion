@@ -69,7 +69,7 @@ brew install miniconda uv
 
 To get started using RFdiffusion, clone the repo:
 ```
-git clone https://github.com/RosettaCommons/RFdiffusion.git
+git clone https://github.com/romainstuder/RFdiffusion.git
 cd RFdiffusion
 CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.10
 

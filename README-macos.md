@@ -60,43 +60,44 @@ We strongly recommend reading this README carefully before getting started with 
 
 If you want to set up RFdiffusion locally on Apple MacOS Silicon (ARM64), follow the steps below:
 
+### Install Homebrew: https://brew.sh/
 
-### Install conda and uv for installation
+If it is already installed, upgrade packages releases:
+```shell
+brew upgrade
+```
+
+### Install cmake, conda and uv for installation
 - miniconda => free mini anaconda: https://www.anaconda.com/docs/getting-started/miniconda/main
 - uv => fast python solver for dependencies: https://docs.astral.sh/uv/
 ```shell
-brew install miniconda uv
-```
-
-
-To get started using RFdiffusion, clone the repo:
-```shell
-git clone https://github.com/romainstuder/RFdiffusion.git
+brew install cmake libomp llvm miniconda uv wget
 ```
 
 ### Set up Conda 
 Initialise Conda for arm64. We need to use Python <3.12 for compatibility issues.
 ```shell
-cd RFdiffusion
 CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.11
 conda activate rfdiffusion
 ```
 
 ### Install SE3-Transformer
-
-Based on https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md  
+Based from https://github.com/YaoYinYing/RFdiffusion/blob/main/README.md  
 Install NVTX C headers, then real NVTX Python-binding, then this version of SE3Transformer with cuda mocked out
 ```shell
-pip install git+https://github.com/YaoYinYing/nvtx-mock --force-reinstall
-pip install nvtx
-pip install git+https://github.com/YaoYinYing/SE3Transformer
-pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
+uv pip install git+https://github.com/YaoYinYing/nvtx-mock --force-reinstall
+uv pip install nvtx
+uv pip install git+https://github.com/YaoYinYing/SE3Transformer
+uv pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
 ```
 
-### Install PyTorch and others Python dependencies from pyproject.toml using UV
+### Clone the RFdiffusion repo and install PyTorch and others Python dependencies from pyproject.toml using UV
 (PyTorch is fixed to 2.5.1 for compatibilities issues)
 ```shell
+git clone https://github.com/romainstuder/RFdiffusion.git
+cd ./RFdiffusion
 uv pip install -r pyproject.toml
+cd ../
 ```
 
 Launch Python to check PyTorch is installed and using Apple Metal Performance Shaders (MPS):
@@ -114,7 +115,7 @@ print(f"current PyTorch installation built with MPS activated? {torch.backends.m
 print(f"check the torch MPS backend: {torch.device('mps')}")
 print(f"test torch tensor on MPS: {torch.tensor([1,2,3], device='mps')}")
 ```
-=> PyTorch version: 2.5.1
+=> PyTorch version: 2.5.1  
 => Torchdata version: 0.8.0
 
 
@@ -126,11 +127,10 @@ https://www.dgl.ai/pages/start.html
 
 ```shell
 # Clone and build
-cd ../
 git clone --recurse-submodules https://github.com/dmlc/dgl.git
-cd dgl
+cd ./dgl
 git checkout 2.5.x
-mkdir build
+mkdir -p build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
       -DUSE_CUDA=OFF \
@@ -142,7 +142,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
       ..
 make -j4
 ```
-Make will trigger an error we can ignore: `make: *** [all] Error 2`  
+Make will trigger an error for installation (`make: *** [all] Error 2`) that we can ignore.  
 We could continue with python installation:
 ```shell
 cd ../python
@@ -168,13 +168,13 @@ torchvision        0.20.1
 ### Install RFDiffusion:
 ```shell
 cd ./RFdiffusion
-pip install -e . # install the rfdiffusion module from the root of the repository
+uv pip install -e . # install the rfdiffusion module from the root of the repository
 ```
 
 Now, we can download the bas model weights `Base_ckpt.pt` (460MB) and perform a small test:
 ```shell
-mkdir models && cd models
-wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt
+mkdir -p models && cd models
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt
 cd ../
 ```
 
@@ -197,20 +197,20 @@ pymol ./test_outputs/short_test_0.pdb
 
 For running a full RFDiffusion, you will then need to download the model weights into the models directory.
 ```shell
-mkdir models && cd models
-wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt
-wget http://files.ipd.uw.edu/pub/RFdiffusion/e29311f6f1bf1af907f9ef9f44b8328b/Complex_base_ckpt.pt
-wget http://files.ipd.uw.edu/pub/RFdiffusion/60f09a193fb5e5ccdc4980417708dbab/Complex_Fold_base_ckpt.pt
-wget http://files.ipd.uw.edu/pub/RFdiffusion/74f51cfb8b440f50d70878e05361d8f0/InpaintSeq_ckpt.pt
-wget http://files.ipd.uw.edu/pub/RFdiffusion/76d00716416567174cdb7ca96e208296/InpaintSeq_Fold_ckpt.pt
-wget http://files.ipd.uw.edu/pub/RFdiffusion/5532d2e1f3a4738decd58b19d633b3c3/ActiveSite_ckpt.pt
-wget http://files.ipd.uw.edu/pub/RFdiffusion/12fc204edeae5b57713c5ad7dcb97d39/Base_epoch8_ckpt.pt
+mkdir -p models && cd models
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/e29311f6f1bf1af907f9ef9f44b8328b/Complex_base_ckpt.pt
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/60f09a193fb5e5ccdc4980417708dbab/Complex_Fold_base_ckpt.pt
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/74f51cfb8b440f50d70878e05361d8f0/InpaintSeq_ckpt.pt
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/76d00716416567174cdb7ca96e208296/InpaintSeq_Fold_ckpt.pt
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/5532d2e1f3a4738decd58b19d633b3c3/ActiveSite_ckpt.pt
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/12fc204edeae5b57713c5ad7dcb97d39/Base_epoch8_ckpt.pt
 
 Optional:
-wget http://files.ipd.uw.edu/pub/RFdiffusion/f572d396fae9206628714fb2ce00f72e/Complex_beta_ckpt.pt
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/f572d396fae9206628714fb2ce00f72e/Complex_beta_ckpt.pt
 
 # original structure prediction weights
-wget http://files.ipd.uw.edu/pub/RFdiffusion/1befcb9b28e2f778f53d47f18b7597fa/RF_structure_prediction_weights.pt
+wget --no-clobber http://files.ipd.uw.edu/pub/RFdiffusion/1befcb9b28e2f778f53d47f18b7597fa/RF_structure_prediction_weights.pt
 
 cd ../
 ```

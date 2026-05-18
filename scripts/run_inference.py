@@ -141,6 +141,7 @@ def main(conf: HydraConfig) -> None:
             sampler.binderlen,
             chain_idx=sampler.chain_idx,
             bfacts=bfacts,
+            idx_pdb=sampler.idx_pdb
         )
 
         # run metadata
@@ -186,6 +187,9 @@ def main(conf: HydraConfig) -> None:
                 backbone_only=False,
                 chain_ids=sampler.chain_idx,
             )
+
+        if conf.inference.empty_cache_per_design and torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
         log.info(f"Finished design in {(time.time()-start_time)/60:.2f} minutes")
 

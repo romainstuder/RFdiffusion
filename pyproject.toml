@@ -39,3 +39,6 @@ run-inference = "scripts.run_inference:main"
 
 [tool.setuptools]
 packages = ["rfdiffusion"]
+
+[tool.uv.sources]
+se3-transformer = { path = "env/SE3Transformer", editable = true }

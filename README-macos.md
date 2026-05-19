@@ -75,9 +75,9 @@ brew install cmake libomp llvm miniconda uv wget
 ```
 
 ### Set up Conda 
-Initialise Conda for arm64. We need to use Python <3.12 for compatibility issues.
+Initialise Conda for arm64.
 ```shell
-CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.11
+CONDA_SUBDIR=osx-arm64 conda create -n rfdiffusion python=3.12
 conda activate rfdiffusion
 ```
 
@@ -92,7 +92,7 @@ uv pip install git+https://github.com/NVIDIA/dllogger#egg=dllogger
 ```
 
 ### Clone the RFdiffusion repo and install PyTorch and others Python dependencies from pyproject.toml using UV
-(PyTorch is fixed to 2.5.1 for compatibilities issues)
+(PyTorch is fixed to 2.12 for compatibilities issues)
 ```shell
 git clone https://github.com/romainstuder/RFdiffusion.git
 cd ./RFdiffusion
@@ -103,7 +103,7 @@ cd ../
 Launch Python to check PyTorch is installed and using Apple Metal Performance Shaders (MPS):
 https://developer.apple.com/metal/pytorch/
 ```shell
-python3
+uv run python
 ```
 ```shell
 import torch
@@ -115,21 +115,21 @@ print(f"current PyTorch installation built with MPS activated? {torch.backends.m
 print(f"check the torch MPS backend: {torch.device('mps')}")
 print(f"test torch tensor on MPS: {torch.tensor([1,2,3], device='mps')}")
 ```
-=> PyTorch version: 2.5.1  
-=> Torchdata version: 0.8.0
+=> PyTorch version: 2.12.0  
+=> Torchdata version: 0.11.0
 
 
 
 ### Install Deep Graph Library (DGL)
 
-We need to compile DGL 2.5 fron sources. And we need release 2.5 to match PyTorch release.
+We need to compile DGL 2.12 fron sources. And we need release 2.12 to match PyTorch release.
 https://www.dgl.ai/pages/start.html
 
 ```shell
 # Clone and build
 git clone --recurse-submodules https://github.com/dmlc/dgl.git
 cd ./dgl
-git checkout 2.5.x
+git checkout 2.12.x
 mkdir -p build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
@@ -157,11 +157,11 @@ pip3 list|grep -E 'torch|dgl'
 ```                              
 => Should match:
 ```shell
-dgl                2.5.0
-torch              2.5.1
-torchaudio         2.5.1
-torchdata          0.8.0
-torchvision        0.20.1
+dgl                2.12.0
+torch              2.12.0
+torchaudio         2.11.0
+torchdata          0.11.0
+torchvision        0.27.0
 ```
 
 
@@ -180,7 +180,7 @@ cd ../
 
 Let's perform a small test (1 model with 50 amino acids, aka two helices):
 ```shell
-./scripts/run_inference.py 'contigmap.contigs=[50-50]' \
+uv run ./scripts/run_inference.py 'contigmap.contigs=[50-50]' \
   inference.output_prefix=test_outputs/short_test \
   inference.num_designs=1
 ```
